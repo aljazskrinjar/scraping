@@ -7,7 +7,13 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'headless'
+
 gem 'pry'
+
+gem 'watir'
+
+gem 'mechanize'
 
 gem 'rails_12factor', group: :production
 
