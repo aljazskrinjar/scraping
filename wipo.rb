@@ -9,7 +9,7 @@ require 'open-uri'
 url = 'http://www.wipo.int/branddb/en/index.jsp#'
 
 
-browser = Watir::Browser.new
+browser = Watir::Browser.new :chrome, headless: true
 browser.goto(url)
 
 browser.link(text: 'Names').click
