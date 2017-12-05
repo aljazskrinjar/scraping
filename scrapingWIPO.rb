@@ -4,25 +4,42 @@ require 'watir'
 require 'json'
 require 'open-uri'
 
+def busy (browser)
+  if browser.text.include? "Sorry, the page is busy processing"
+    puts "Sorry the scraping page is having some problems. Please try later."
+  end
+end
 
+def check_if_zero_results (browser)
+  if browser.text.include? 'No documents match your query'
+    exit
+  end
+end
 
 url = 'http://www.wipo.int/branddb/en/index.jsp#'
-
-
 browser = Watir::Browser.new :chrome, headless: true
 browser.goto(url)
 Watir::Wait.until { browser.text.include? 'Names' }
+busy browser
 browser.link(text: 'Names').click
+busy browser
 browser.input(id: 'HOL_input').send_keys(ARGV[0])
 Watir::Wait.until { browser.text.include? 'search' }
+busy browser
 browser.send_keys :enter
-Watir::Wait.until { browser.text.include? 'options' }
+Watir::Wait.until { (browser.text.include? 'options') || (browser.text.include? 'No documents match your query')}
+busy browser
+check_if_zero_results browser
 browser.link(:visible_text => /options/).click
 Watir::Wait.until { browser.text.include? 'Add All' }
+busy browser
 browser.link(:visible_text => /Add All/).click
 Watir::Wait.until { browser.text.include? 'Ok' }
+busy browser
 browser.button(:visible_text => /Ok/).click
-Watir::Wait.until { browser.text.include? 'Brand' }
+busy browser
+Watir::Wait.until { browser.text.include?('Remove All') == false }
+
 doc = Nokogiri::HTML(browser.html)
 number_of_rows =doc.xpath('//tr[@role = "row"]').count
 
