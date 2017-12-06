@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'mechanize'
+require 'nokogiri'
 require 'watir'
 require 'json'
 
